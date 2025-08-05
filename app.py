@@ -1,9 +1,16 @@
 
+
 import streamlit as st
 from transformers import pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 import pandas as pd
+import random
+import numpy as np
+
+
+random.seed(42)
+np.random.seed(42)
 
 # Title
 st.title("📰 Fake News Generator & Detector")
