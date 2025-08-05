@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fake News Generator & Detector</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 { color: #2c3e50; }
+    h2 { color: #34495e; margin-top: 40px; }
+    img {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    a { color: #007acc; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <h1>📰 Fake News Generator & Detector</h1>
+  <p>
+    A project that uses <strong>GPT-2</strong> to generate realistic fake news articles, and a 
+    <strong>Logistic Regression classifier</strong> (trained on TF-IDF features) to detect if an article is 
+    <em>REAL</em> or <em>FAKE</em>. Fully implemented and tested in a Kaggle Notebook.
+  </p>
+
+  <h2>📷 Project Output</h2>
+  <p>Example output of the system:</p>
+  <img src="screenshot.png" alt="Fake News Generator Output" width="700">
+
+  <h2>📄 Notebook & Code</h2>
+  <ul>
+    <li><a href="https://www.kaggle.com/code/your-username/fake-news-generator-detector" target="_blank">Open in Kaggle</a></li>
+    <li><a href="https://github.com/coderprachijha/fake_news_generator_and-_detection" target="_blank">View on GitHub</a></li>
+  </ul>
+
+  <h2>⚙️ How It Works</h2>
+  <ol>
+    <li>User enters a news headline or prompt.</li>
+    <li>GPT-2 generates a fake news article based on the prompt.</li>
+    <li>The detector classifies the article as REAL or FAKE with confidence.</li>
+  </ol>
+
+  <h2>🧰 Technologies Used</h2>
+  <ul>
+    <li>Python 3</li>
+    <li>Hugging Face Transformers (GPT-2)</li>
+    <li>Scikit-learn (TF-IDF, Logistic Regression)</li>
+    <li>Kaggle Notebooks</li>
+    <li>GitHub Pages (for this site)</li>
+  </ul>
+
+  <h2>🚧 Challenges</h2>
+  <ul>
+    <li>Kaggle does not persist uploaded models; solved by retraining in notebook.</li>
+    <li>GPT-2 model loading delays; optimized with GPU and `max_length` adjustments.</li>
+  </ul>
+
+  <h2>👩‍💻 Author</h2>
+  <p>Made by <strong>Prachi Jha</strong> | 
+  <a href="https://github.com/coderprachijha" target="_blank">GitHub</a></p>
+
+</body>
+</html>
