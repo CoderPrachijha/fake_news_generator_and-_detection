@@ -7,7 +7,7 @@ import pandas as pd
 
 # Title
 st.title("📰 Fake News Generator & Detector")
-st.write("Enter a prompt to generate a fake news article using GPT-2, and detect whether it's REAL or FAKE.")
+st.write("Enter a prompt to detect a news ,z whether it's REAL or FAKE.")
 
 # Load GPT-2 text generation pipeline
 @st.cache_resource
