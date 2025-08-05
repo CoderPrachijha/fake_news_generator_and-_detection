@@ -65,7 +65,13 @@ elif profanity.contains_profanity(prompt):
     st.error("⚠️ Inappropriate language detected. Please rephrase.")
     input_valid = False
 
-# ✅ Generate and Detect
+def is_nonsense(text):
+    total_chars = len(text)
+    alpha_chars = sum(c.isalpha() for c in text)
+    return alpha_chars / total_chars < 0.3  # Too few letters → likely gibberish
+
+...
+
 if input_valid and st.button("Generate and Detect"):
     with st.spinner("Generating fake news article..."):
         result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
@@ -73,13 +79,17 @@ if input_valid and st.button("Generate and Detect"):
     st.subheader("📰 Generated News Article:")
     st.write(result)
 
-    # ✅ Post-generation nonsense filter
-    if re.fullmatch(r"[\w\d\s=:.]*", result) and not re.search(r'[a-zA-Z]{5,}', result):
+    if is_nonsense(result):
         st.error("⚠️ Generated article does not contain meaningful content.")
     else:
         text_vector = vectorizer.transform([result])
         prediction = model.predict(text_vector)[0]
         confidence = model.predict_proba(text_vector)[0].max()
+
+        label = "REAL" if prediction == 1 else "FAKE"
+        st.subheader("🔍 Detection Result:")
+        st.write(f"**Prediction:** {label}")
+        st.write(f"**Confidence:** {confidence:.2f}")
 
         label = "REAL" if prediction == 1 else "FAKE"
         st.subheader("🔍 Detection Result:")
