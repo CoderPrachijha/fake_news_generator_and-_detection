@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 from transformers import pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -8,21 +6,22 @@ import pandas as pd
 import random
 import numpy as np
 
-
+# Set seeds for reproducibility
 random.seed(42)
 np.random.seed(42)
 
-# Title
-st.title("📰 Fake News Generator & Detector")
-st.write("Enter a prompt to detect a news , whether it's REAL or FAKE.")
 
-# Load GPT-2 text generation pipeline
 @st.cache_resource
 def load_generator():
     return pipeline("text-generation", model="distilgpt2")
 
 generator = load_generator()
 
+
+
+# Title
+st.title("📰 Fake News Generator & Detector")
+st.write("Enter a prompt to detect a news , whether it's REAL or FAKE.")
 # Sample dataset for training detector (used only for demo purpose)
 @st.cache_data
 def load_data():
@@ -48,22 +47,41 @@ model = LogisticRegression()
 model.fit(X, df['label'])
 
 # User input
+from better_profanity import profanity
+
 prompt = st.text_input("✍️ Enter a news prompt:", "Breaking News:")
 
-if st.button("Generate and Detect"):
-    # Generate text using GPT-2
-    with st.spinner("Generating..."):
-        result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
+# ✅ Load the profanity filter once
+profanity.load_censor_words()
 
-    st.subheader("📰 Generated News Article:")
-    st.write(result)
+# ✅ Filter the input before generating/detecting
+if prompt.strip() == "":
+    st.warning("⚠️ Please enter a valid news prompt.")
+elif len(prompt.strip()) < 10:
+    st.warning("⚠️ Prompt is too short. Try to write a full headline or sentence.")
+elif not any(char.isalpha() for char in prompt):
+    st.warning("⚠️ Prompt must contain readable text.")
+elif profanity.contains_profanity(prompt):
+    st.error("⚠️ Inappropriate language detected. Please rephrase.")
+else:
+    if st.button("Generate and Detect"):
+        with st.spinner("Generating fake news article..."):
+            result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
 
-    # Predict with detector
-    text_vector = vectorizer.transform([result])
-    prediction = model.predict(text_vector)[0]
-    confidence = model.predict_proba(text_vector)[0].max()
+        st.subheader("📰 Generated News Article:")
+        st.write(result)
 
-    label = "REAL" if prediction == 1 else "FAKE"
-    st.subheader("🔍 Detection Result:")
-    st.write(f"**Prediction:** {label}")
-    st.write(f"**Confidence:** {confidence:.2f}")
+        text_vector = vectorizer.transform([result])
+        prediction = model.predict(text_vector)[0]
+        confidence = model.predict_proba(text_vector)[0].max()
+
+        label = "REAL" if prediction == 1 else "FAKE"
+        st.subheader("🔍 Detection Result:")
+        st.write(f"**Prediction:** {label}")
+        st.write(f"**Confidence:** {confidence:.2f}")
+
+
+        
+
+
+    
