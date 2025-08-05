@@ -66,12 +66,18 @@ elif profanity.contains_profanity(prompt):
 
 # Generate and Detect only if input is valid
 if input_valid and st.button("Generate and Detect"):
-    with st.spinner("Generating fake news article..."):
-        result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
+    import re
 
-    st.subheader("📰 Generated News Article:")
-    st.write(result)
+with st.spinner("Generating fake news article..."):
+    result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
 
+st.subheader("📰 Generated News Article:")
+st.write(result)
+
+
+if re.fullmatch(r"[\w\d\s=:.]*", result) and not re.search(r'[a-zA-Z]{5,}', result):
+    st.error("⚠️ Generated article does not contain meaningful content.")
+else:
     text_vector = vectorizer.transform([result])
     prediction = model.predict(text_vector)[0]
     confidence = model.predict_proba(text_vector)[0].max()
