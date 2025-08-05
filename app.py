@@ -7,7 +7,7 @@ import pandas as pd
 
 # Title
 st.title("📰 Fake News Generator & Detector")
-st.write("Enter a prompt to detect a news ,z whether it's REAL or FAKE.")
+st.write("Enter a prompt to detect a news , whether it's REAL or FAKE.")
 
 # Load GPT-2 text generation pipeline
 @st.cache_resource
@@ -45,7 +45,7 @@ prompt = st.text_input("✍️ Enter a news prompt:", "Breaking News:")
 
 if st.button("Generate and Detect"):
     # Generate text using GPT-2
-    with st.spinner("Generating fake news article..."):
+    with st.spinner("Generating..."):
         result = generator(prompt, max_length=100, do_sample=True)[0]['generated_text']
 
     st.subheader("📰 Generated News Article:")
