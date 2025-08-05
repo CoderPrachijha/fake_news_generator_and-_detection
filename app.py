@@ -63,7 +63,7 @@ elif not any(char.isalpha() for char in prompt):
     st.warning("⚠️ Prompt must contain readable text.")
 elif profanity.contains_profanity(prompt):
     st.error("⚠️ Inappropriate language detected. Please rephrase.")
-else:
+
     if st.button("Generate and Detect"):
         with st.spinner("Generating fake news article..."):
             result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
