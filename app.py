@@ -5,24 +5,24 @@ from sklearn.linear_model import LogisticRegression
 import pandas as pd
 import random
 import numpy as np
+from better_profanity import profanity
 
 # Set seeds for reproducibility
 random.seed(42)
 np.random.seed(42)
 
-
+# Load GPT-2 generator with caching
 @st.cache_resource
 def load_generator():
     return pipeline("text-generation", model="distilgpt2")
 
 generator = load_generator()
 
-
-
-# Title
+# App title
 st.title("📰 Fake News Generator & Detector")
-st.write("Enter a prompt to detect a news , whether it's REAL or FAKE.")
-# Sample dataset for training detector (used only for demo purpose)
+st.write("Enter a prompt to generate and detect whether the news is REAL or FAKE.")
+
+# Load mini sample dataset and train the detector
 @st.cache_data
 def load_data():
     data = {
@@ -39,49 +39,44 @@ def load_data():
     return pd.DataFrame(data)
 
 df = load_data()
-
-# Train detector model
 vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(df['text'])
 model = LogisticRegression()
 model.fit(X, df['label'])
 
 # User input
-from better_profanity import profanity
-
+profanity.load_censor_words()
 prompt = st.text_input("✍️ Enter a news prompt:", "Breaking News:")
 
-# ✅ Load the profanity filter once
-profanity.load_censor_words()
+# Input Validation
+input_valid = True
 
-# ✅ Filter the input before generating/detecting
 if prompt.strip() == "":
     st.warning("⚠️ Please enter a valid news prompt.")
+    input_valid = False
 elif len(prompt.strip()) < 10:
     st.warning("⚠️ Prompt is too short. Try to write a full headline or sentence.")
+    input_valid = False
 elif not any(char.isalpha() for char in prompt):
     st.warning("⚠️ Prompt must contain readable text.")
+    input_valid = False
 elif profanity.contains_profanity(prompt):
     st.error("⚠️ Inappropriate language detected. Please rephrase.")
+    input_valid = False
 
-    if st.button("Generate and Detect"):
-        with st.spinner("Generating fake news article..."):
-            result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
+# Generate and Detect only if input is valid
+if input_valid and st.button("Generate and Detect"):
+    with st.spinner("Generating fake news article..."):
+        result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
 
-        st.subheader("📰 Generated News Article:")
-        st.write(result)
+    st.subheader("📰 Generated News Article:")
+    st.write(result)
 
-        text_vector = vectorizer.transform([result])
-        prediction = model.predict(text_vector)[0]
-        confidence = model.predict_proba(text_vector)[0].max()
+    text_vector = vectorizer.transform([result])
+    prediction = model.predict(text_vector)[0]
+    confidence = model.predict_proba(text_vector)[0].max()
 
-        label = "REAL" if prediction == 1 else "FAKE"
-        st.subheader("🔍 Detection Result:")
-        st.write(f"**Prediction:** {label}")
-        st.write(f"**Confidence:** {confidence:.2f}")
-
-
-        
-
-
-    
+    label = "REAL" if prediction == 1 else "FAKE"
+    st.subheader("🔍 Detection Result:")
+    st.write(f"**Prediction:** {label}")
+    st.write(f"**Confidence:** {confidence:.2f}")
