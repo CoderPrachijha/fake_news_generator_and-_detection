@@ -53,7 +53,7 @@ prompt = st.text_input("✍️ Enter a news prompt:", "Breaking News:")
 if st.button("Generate and Detect"):
     # Generate text using GPT-2
     with st.spinner("Generating..."):
-        result = generator(prompt, max_length=100, do_sample=True)[0]['generated_text']
+        result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
 
     st.subheader("📰 Generated News Article:")
     st.write(result)
