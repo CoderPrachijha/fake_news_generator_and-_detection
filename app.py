@@ -12,7 +12,7 @@ st.write("Enter a prompt to generate a fake news article using GPT-2, and detect
 # Load GPT-2 text generation pipeline
 @st.cache_resource
 def load_generator():
-    return pipeline("text-generation", model="gpt2")
+    return pipeline("text-generation", model="distilgpt2")
 
 generator = load_generator()
 
