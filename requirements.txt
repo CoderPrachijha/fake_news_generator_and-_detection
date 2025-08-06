@@ -1,5 +1,9 @@
+
 streamlit
 transformers
 scikit-learn
 pandas
+numpy
 better_profanity
+torch
+
