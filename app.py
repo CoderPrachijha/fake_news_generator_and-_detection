@@ -76,7 +76,8 @@ def is_nonsense(text):
 # Generate and Detect
 if input_valid and st.button("Generate and Detect"):
     with st.spinner("Generating fake news article..."):
-        result = generator(prompt, max_length=100, do_sample=False)[0]['generated_text']
+        result = generator(prompt, max_length=100, num_return_sequences=1, do_sample=True)[0]['generated_text']
+        result = result.split(".")[0] + "."  # Truncate to first sentence
 
     st.subheader("📰 Generated News Article:")
     st.write(result)
@@ -92,3 +93,4 @@ if input_valid and st.button("Generate and Detect"):
         st.subheader("🔍 Detection Result:")
         st.write(f"**Prediction:** {label}")
         st.write(f"**Confidence:** {confidence:.2f}")
+
